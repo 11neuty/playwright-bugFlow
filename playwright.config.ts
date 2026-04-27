@@ -16,7 +16,7 @@ export default defineConfig({
   video: 'retain-on-failure',
   screenshot: 'only-on-failure',
   browserName: 'chromium',
-  headless: false,
+  headless: true,
 },
 
   projects: [

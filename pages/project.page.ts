@@ -3,26 +3,44 @@ import { Page, expect } from '@playwright/test';
 export class ProjectPage {
   constructor(private page: Page) {}
 
-  async createProject(name: string) {
-    await this.page.getByRole('button', { name: 'New project' }).click();
+  get newProjectButton() {
+    return this.page.getByRole('button', { name: 'New project' });
+  }
 
-    const input = this.page.getByPlaceholder('Example: Mobile App');
-    await expect(input).toBeVisible();
-    await input.fill(name);
+  get projectInput() {
+    return this.page.getByPlaceholder('Example: Mobile App');
+  }
 
-    const createBtn = this.page.locator('button[type="submit"]', {
+  get createProjectButton() {
+    return this.page.locator('button[type="submit"]', {
       hasText: 'Create project'
     });
+  }
 
-    await expect(createBtn).toBeVisible();
-    await expect(createBtn).toBeEnabled();
+  get projectDropdown() {
+    return this.page.getByRole('combobox', { name: 'Project' });
+  }
 
-    await createBtn.click();
+  async openNewProjectModal() {
+    await this.newProjectButton.click();
+    await expect(this.projectInput).toBeVisible();
+  }
+
+  async createProject(name: string) {
+    await this.openNewProjectModal();
+
+    await this.projectInput.fill(name);
+
+    await expect(this.createProjectButton).toBeVisible();
+    await expect(this.createProjectButton).toBeEnabled();
+
+    await this.createProjectButton.click();
+
+    // ✅ tunggu dropdown update
+    await expect(this.projectDropdown).toContainText(name);
   }
 
   async verifyProjectVisible(name: string) {
-    const projectDropdown = this.page.getByRole('combobox', { name: 'Project' });
-
-    await expect(projectDropdown).toContainText(name);
+    await expect(this.projectDropdown).toContainText(name);
   }
 }
