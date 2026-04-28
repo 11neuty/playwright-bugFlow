@@ -1,30 +1,17 @@
-import { test, expect } from '@playwright/test';
-import { LoginPage } from '../../pages/login.page';
-import { ProjectPage } from '../../pages/project.page';
-import { users } from '../../fixtures/users';
-import { generateProjectName } from '../../utils/data.helper';
+import { test, expect } from '../../fixtures/base.fixture';
 
-test('TC-ADM-001 create project', async ({ page }) => {
-  const loginPage = new LoginPage(page);
-  const projectPage = new ProjectPage(page);
-  const projectName = generateProjectName();
+test.describe('Project Management - Admin', () => {
 
-  await test.step('Login as admin', async () => {
-    await loginPage.login(users.admin.email, users.admin.password);
-    await loginPage.verifyLoginSuccess();
+  test('TC-ADM-001 | create project success', async ({ projectPage }) => {
+    const name = 'Project-' + Date.now();
+
+    await projectPage.createProject(name);
+    await projectPage.verifyProjectCreated(name);
   });
 
-  await test.step('Create project', async () => {
-    await projectPage.createProject(projectName);
+  test('TC-ADM-002 | empty name', async ({ projectPage }) => {
+    await projectPage.createProjectWithoutName();
+    await projectPage.verifyProjectNotCreated();
   });
 
-  await test.step('Verify project created', async () => {
-    const dropdown = page.getByRole('combobox', { name: 'Project' });
-
-    // ✅ validasi project muncul dan terpilih
-    await expect(dropdown).toContainText(projectName);
-
-    // optional tambahan dari POM
-    await projectPage.verifyProjectVisible(projectName);
-  });
 });

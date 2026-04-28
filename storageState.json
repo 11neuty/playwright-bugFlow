@@ -1,0 +1,15 @@
+{
+  "cookies": [
+    {
+      "name": "bugflow_refresh_token",
+      "value": "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGJ1Z3RyYWNrZXIuZGV2IiwibmFtZSI6IkFkbWluIFVzZXIiLCJyb2xlIjoiQURNSU4iLCJ0eXBlIjoicmVmcmVzaCIsInN1YiI6ImNtbmVtd2tsNjAwMDB1djVvaWp2ZThqZmgiLCJqdGkiOiI3ZGY5Yzc5NC03NGJmLTQ4YTktOGExMC1jYWRjMTM3MWY1ODAiLCJpYXQiOjE3NzczODk2NjIsImV4cCI6MTc3Nzk5NDQ2Mn0.6yNi25tTLJUcdnqfcUki-2rC10-vTih-FFqQGbi0_tQ",
+      "domain": "bugflow-seven.vercel.app",
+      "path": "/",
+      "expires": 1777994462.583587,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Strict"
+    }
+  ],
+  "origins": []
+}

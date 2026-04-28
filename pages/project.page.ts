@@ -1,46 +1,46 @@
-import { Page, expect } from '@playwright/test';
+import { Locator, Page, expect } from '@playwright/test';
 
 export class ProjectPage {
-  constructor(private page: Page) {}
+  readonly newProjectButton: Locator;
+  readonly modal: Locator;
+  readonly projectInput: Locator;
+  readonly createButton: Locator;
+  readonly projectDropdown: Locator;
 
-  get newProjectButton() {
-    return this.page.getByRole('button', { name: 'New project' });
+  constructor(private page: Page) {
+    this.newProjectButton = this.page.getByRole('button', { name: /new project/i });
+    this.modal = this.page.getByRole('heading', { name: /^create project$/i });
+    this.projectInput = this.page.getByPlaceholder(/mobile app/i);
+    this.createButton = this.page.getByRole('button', { name: /^create project$/i }).last();
+    this.projectDropdown = this.page.locator('select').first();
   }
 
-  get projectInput() {
-    return this.page.getByPlaceholder('Example: Mobile App');
-  }
-
-  get createProjectButton() {
-    return this.page.locator('button[type="submit"]', {
-      hasText: 'Create project'
-    });
-  }
-
-  get projectDropdown() {
-    return this.page.getByRole('combobox', { name: 'Project' });
-  }
-
-  async openNewProjectModal() {
+  async openCreateProjectModal() {
+    await expect(this.newProjectButton).toBeVisible();
     await this.newProjectButton.click();
-    await expect(this.projectInput).toBeVisible();
+    await expect(this.modal).toBeVisible();
   }
 
   async createProject(name: string) {
-    await this.openNewProjectModal();
-
+    await this.openCreateProjectModal();
     await this.projectInput.fill(name);
+    await this.createButton.click();
+  }
 
-    await expect(this.createProjectButton).toBeVisible();
-    await expect(this.createProjectButton).toBeEnabled();
+  async createProjectWithoutName() {
+    await this.openCreateProjectModal();
+    await this.createButton.click();
+  }
 
-    await this.createProjectButton.click();
-
-    // ✅ tunggu dropdown update
+  async verifyProjectCreated(name: string) {
     await expect(this.projectDropdown).toContainText(name);
   }
 
-  async verifyProjectVisible(name: string) {
-    await expect(this.projectDropdown).toContainText(name);
+  async verifyProjectNotCreated() {
+    await expect(this.modal).toBeVisible();
+  }
+
+  async verifyDuplicateError() {
+    await expect(this.page.getByText(/already exists/i)).toBeVisible();
   }
 }

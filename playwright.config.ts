@@ -1,28 +1,22 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
 
-  fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-
-  reporter: 'html',
+  fullyParallel: false,
+  workers: 1,
 
   use: {
-  baseURL: 'https://bugflow-seven.vercel.app',
-  trace: 'on-first-retry',
-  video: 'retain-on-failure',
-  screenshot: 'only-on-failure',
-  browserName: 'chromium',
-  headless: true,
-},
+    baseURL: 'https://bugflow-seven.vercel.app'
+  },
 
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-  ],
+      testIgnore: /.*\.setup\.ts/,
+      use: {
+        browserName: 'chromium'
+      }
+    }
+  ]
 });
