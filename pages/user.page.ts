@@ -8,7 +8,8 @@ export class UserPage {
   readonly passwordInput: Locator;
   readonly roleDropdown: Locator;
   readonly createButton: Locator;
-  readonly closeModalButton: Locator;
+  readonly teamAccessButton: Locator;
+  readonly deleteUserAccess: Locator;
 
   constructor(private page: Page) {
     this.newUserButton = this.page.getByRole('button', { name: /new user/i });
@@ -18,7 +19,8 @@ export class UserPage {
     this.passwordInput = this.page.getByPlaceholder(/temporary password/i);
     this.roleDropdown = this.page.getByRole('combobox', { name: /role/i }).or(this.page.locator('select').last());
     this.createButton = this.page.getByRole('button', { name: /create user/i });
-    this.closeModalButton = this.page.getByRole('button', { name: /cancel|close/i }).first();
+    this.teamAccessButton = this.page.getByRole('button', { name: /team access/i });
+    this.deleteUserAccess = this.page.getByRole('button', { name: /delete/i });
   }
 
   async openCreateUserModal() {
@@ -56,13 +58,6 @@ export class UserPage {
     await expect(this.modal).toBeVisible();
   }
 
-  async closeCreateUserModalIfOpen() {
-    if (await this.modal.isVisible().catch(() => false)) {
-      await this.closeModalButton.click();
-      await expect(this.modal).toBeHidden();
-    }
-  }
-
   async expectValidationMessage(pattern: RegExp) {
     await expect(this.page.getByText(pattern)).toBeVisible();
   }
@@ -73,7 +68,7 @@ export class UserPage {
   }
 
   async openUsersPage() {
-    await this.page.goto('/dashboard', { waitUntil: 'domcontentloaded' });
+    await this.page.goto('/users', { waitUntil: 'networkidle' });
     await expect(this.newUserButton).toBeVisible();
   }
 
@@ -91,5 +86,12 @@ export class UserPage {
     }
 
     await dropdown.selectOption(role);
+  }
+
+  async deleteNewUser(){
+    await this.page.goto('/Team Access', {waitUntil: 'networkidle'});
+    //search new user created
+    
+    //click delete user
   }
 }
